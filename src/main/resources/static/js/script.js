@@ -1,4 +1,4 @@
-let stompClient = null
+let stompClient = null;
 
 function setConnected(connected){
     document.getElementById('sendMessage').disabled = !connected;
@@ -19,6 +19,8 @@ function connect(){
         stompClient.subscribe('/topic/typing', function (message){
             showTyping(JSON.parse(message.body));
         });
+
+        loadHistory();
     });
 }
 
@@ -27,7 +29,7 @@ function showMessage(message) {
     var messageElement = document.createElement('div');
     messageElement.textContent = message.sender + ' : ' + message.content;
     messageElement.className = "border-bottom mb-1";
-    chat.appendChild(messageElement)
+    chat.appendChild(messageElement);
     chat.scrollTop = chat.scrollHeight;
 }
 
@@ -68,3 +70,10 @@ document.getElementById('messageInput').addEventListener('input', function() {
         stompClient.send("/app/stopTyping", {}, JSON.stringify({ sender: sender }));
     }, 4000); // stop typing after 4 second of inactivity
 });
+
+function loadHistory() {
+    fetch('/api/messages')
+        .then(response => response.json())
+        .then(messages => messages.forEach(showMessage))
+        .catch(error => console.error('Could not load history', error));
+}
