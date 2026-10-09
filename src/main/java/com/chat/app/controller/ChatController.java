@@ -16,9 +16,22 @@ public class ChatController {
         return message;
     }
 
+    @MessageMapping("/typing")
+    @SendTo("/topic/typing")
+    public ChatMessage typing(ChatMessage message) {
+        message.setType("TYPING");
+        return message;
+    }
 
-    @GetMapping("chat")
+    @MessageMapping("/stopTyping")
+    @SendTo("/topic/typing")
+    public ChatMessage stopTyping(ChatMessage message) {
+        message.setType("STOP_TYPING");
+        return message;
+    }
+
+    @GetMapping("/chat")
     public String chat(){
-        return "chat.html";
+        return "chat";
     }
 }
